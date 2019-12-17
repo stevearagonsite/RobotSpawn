@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Enemies
+namespace Entities
 {
-    public abstract class BaseEnemy : MonoBehaviour
+    public interface IFire
     {
+        void StartFire();
+        void StopFire();
     }
 }
-

@@ -7,7 +7,7 @@ namespace Managers
     public class UpdateManager : MonoBehaviour
     {
         private static UpdateManager _instance;
-        public static UpdateManager Instance { get { return _instance; } }
+        public static UpdateManager Instance => _instance;
         
         public event Action Execute = delegate { };
         public event Action ExecuteFixed = delegate { };

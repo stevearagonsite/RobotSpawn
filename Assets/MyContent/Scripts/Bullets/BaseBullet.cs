@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 using Managers;
+using UnityEngine;
 
 namespace Bullets
 {
     [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(SphereCollider))]
+    [RequireComponent(typeof(Collider))]
     public abstract class BaseBullet : MonoBehaviour
     {
+        public event Action Execute = delegate { };
         [SerializeField]
         protected float _speed;
 
@@ -27,34 +24,11 @@ namespace Bullets
 
         protected void OnDestroy()
         {
-            if (UpdateManager.Instance) UpdateManager.Instance.ExecuteFixed -= ExecuteFixed;
+            if (UpdateManager.Instance) UpdateManager.Instance.ExecuteFixed -= FixedExecute;
         }
         #endregion MonoBehavior
 
-        protected abstract void ExecuteFixed();
-
-        private void Initialize()
-        {
-            _currentTimeLife = 0;
-            transform.position = Vector3.zero;
-
-            if (UpdateManager.Instance) UpdateManager.Instance.ExecuteFixed += ExecuteFixed;
-
-            foreach (var trail in _trails)
-            {
-                trail.time = 1f;
-            }
-        }
-
-        private void Dispose()
-        {
-            if (UpdateManager.Instance) UpdateManager.Instance.ExecuteFixed -= ExecuteFixed;
-
-            foreach (var trail in _trails)
-            {
-                trail.time = 0;
-            }
-        }
+        protected abstract void FixedExecute();
 
         public static void InitializeBullet(BaseBullet bulletObj)
         {
@@ -66,6 +40,29 @@ namespace Bullets
         {
             bulletObj.Dispose();
             bulletObj.gameObject.SetActive(false);
+        }
+        
+        private void Initialize()
+        {
+            _currentTimeLife = 0;
+            transform.position = Vector3.zero;
+
+            if (UpdateManager.Instance) UpdateManager.Instance.ExecuteFixed += FixedExecute;
+
+            foreach (var trail in _trails)
+            {
+                trail.time = 1f;
+            }
+        }
+
+        private void Dispose()
+        {
+            if (UpdateManager.Instance) UpdateManager.Instance.ExecuteFixed -= FixedExecute;
+
+            foreach (var trail in _trails)
+            {
+                trail.time = 0;
+            }
         }
     }
 }

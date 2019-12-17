@@ -7,7 +7,7 @@ using Utils.Consts;
 using Managers;
 using Bullets;
 
-namespace Player
+namespace Entities.Controller
 {
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(SphereCollider))]

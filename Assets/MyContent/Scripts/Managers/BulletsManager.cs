@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Managers
 {
-    public class BulletsManager : MonoBehaviour
+    public class BulletsManager : MonoBehaviour, IObserverBullet
     {
         [SerializeField]
         private BasicBullet _basicBulletPrefab;
@@ -21,17 +21,29 @@ namespace Managers
 
         public BaseBullet GetBasicBullet()
         {
-            return _basicBulletPool.GetObjectFromPool();;
+            return _basicBulletPool.GetObjectFromPool();
         }
 
         private BaseBullet BulletFactory()
         {
-            return Instantiate<BaseBullet>(_basicBulletPrefab);
+            var bulletObj = Instantiate<BaseBullet>(_basicBulletPrefab);
+            var eventsBullet = (IObservableBullet)bulletObj;
+            eventsBullet.SubscribeDestroyBullet(OnDestroyBullet);
+            
+            return bulletObj;
         }
 
-        public void ReturnBulletToPool(BaseBullet bullet)
+        private void ReturnBulletToPool(BaseBullet bullet)
         {
-            _basicBulletPool.DisablePoolObject(bullet);
+            if (BulletsManager.Instance) _basicBulletPool.DisablePoolObject(bullet);
         }
+
+        #region IObserverBullet
+        public void OnDestroyBullet(BaseBullet bulletObj)
+        {
+            ReturnBulletToPool(bulletObj);
+        }
+        #endregion IObserverBullet
+
     }
 }
