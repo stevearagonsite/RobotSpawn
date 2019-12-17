@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 using Managers;
 
@@ -16,7 +17,7 @@ namespace Entities.Enemies
         #endregion Parameters & attributes
         
         #region MonoBehavior
-        protected virtual void Awake()
+        protected virtual void Start()
         {
             UpdateManager.Instance.ExecuteFixed += FixedExecute;
         }

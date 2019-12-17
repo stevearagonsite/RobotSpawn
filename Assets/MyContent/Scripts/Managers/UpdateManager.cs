@@ -28,7 +28,6 @@ namespace Managers
             }
         }
 
-
         #region UPDATES
 
         private void Update()

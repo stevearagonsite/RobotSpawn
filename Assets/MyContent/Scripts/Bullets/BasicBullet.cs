@@ -1,4 +1,5 @@
 ﻿using System;
+using Bullets.Events;
 using UnityEngine;
 
 namespace Bullets

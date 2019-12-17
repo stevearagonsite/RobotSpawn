@@ -1,19 +1,20 @@
 ﻿using System;
-using UnityEngine;
-
-using Managers;
 using Entities.Controller;
+using Entities.Enemies.Events;
 using SO;
+using UnityEngine;
 
 namespace Entities.Enemies
 {
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(Collider))]
-    public class ShooterEnemy : BaseEnemy, IFire
+    public class ShooterEnemy : BaseEnemy, IFire, IObservableEnemy
     {
         #region Parameters & attributes
         public ShooterEnemySO scriptableObject;
+        public Transform[] TransformCannonSpawners;
         public Transform Target { get; set; }
+        protected event Action<BaseEnemy> OnDestroyEnemy = delegate { };
         public bool IsFiring { get; private set;}
         public float RangeForFire { get; private set; }
 
@@ -21,7 +22,7 @@ namespace Entities.Enemies
         #endregion Parameters & attributes
 
         #region MonoBehavior
-        protected override void Awake()
+        protected void Awake()
         {
             #if UNITY_EDITOR
             if (!scriptableObject) Debug.LogError($"The {transform.name} need the scriptable object.");
@@ -35,11 +36,17 @@ namespace Entities.Enemies
             RangeForFire = scriptableObject.rangeForFire;
         }
 
-        protected void Start()
+        protected override void Start()
         {
-            var player = FindObjectOfType<Player>().transform;
+            base.Start();
+            Target = FindObjectOfType<Player>().transform;
+            
             #if UNITY_EDITOR
-            if (!player) Debug.LogError("The player isn't in the scene.");
+            if (!Target) Debug.LogError("The player isn't in the scene.");
+            foreach (var transformSpawner in TransformCannonSpawners)
+            {
+                if (!transformSpawner) Debug.LogError("The Cannon N1 hasn't reference.");
+            }
             #endif
         }
         #endregion MonoBehavior
@@ -47,13 +54,20 @@ namespace Entities.Enemies
         #region BaseEnemy
         protected override void FixedExecute()
         {
+
             var distance = Vector3.Distance(transform.position, Target.position);
+            transform.LookAt(Target);
+            
             if (distance < RangeForFire)
             {
                 StartFire();
             }else if (IsFiring)
             {
                 StopFire();
+            }
+            else
+            {
+                transform.position += transform.forward * (Speed * Time.deltaTime);
             }
         }
 
@@ -81,5 +95,17 @@ namespace Entities.Enemies
             Debug.Log("Stop Fire");
         }
         #endregion IFire
+
+        #region IObservableEnemy
+        public void SubscribeDestroyEnemy(Action<BaseEnemy> observer)
+        {
+            OnDestroyEnemy += observer;
+        }
+
+        public void UnSubscribeDestroyEnemy(Action<BaseEnemy> observer)
+        {
+            OnDestroyEnemy -= observer;
+        }
+        #endregion IObservableEnemy
     }
 }

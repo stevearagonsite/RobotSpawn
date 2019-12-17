@@ -1,9 +1,60 @@
-﻿using UnityEngine;
+﻿using Entities.Enemies;
+using Entities.Enemies.Events;
+using UnityEngine;
 
 namespace Managers
 {
-    public class EnemiesManager : MonoBehaviour
+    public class EnemiesManager : MonoBehaviour, IObserverEnemy 
     {
+        public GameObject shooterEnemyPrefab;
+        
+        private Pool<BaseEnemy> _shooterEnemyPool;
+        private Pool<BaseEnemy> _SpawnerEnemyPool;
+        
+        private static EnemiesManager _instance;
+        public static EnemiesManager Instance => _instance;
+        
+        private void Awake()
+        {
+            if (_instance != null)
+            {
+                Destroy(this);
+                _instance = this;
+            }
+            else
+            {
+                _instance = this;
+            }
+            _shooterEnemyPool = new Pool<BaseEnemy>(8, EnemyFactory, BaseEnemy.InitializeEnemy, BaseEnemy.DisposeEnemy, true);
+            // _SpawnerEnemyPool = new Pool<BaseEnemy>(4, EnemyFactory, BaseEnemy.InitializeEnemy, BaseEnemy.DisposeEnemy, true);
+        }
+        
+        public BaseEnemy GetShooterEnemy()
+        {
+            return _shooterEnemyPool.GetObjectFromPool();
+        }
+
+        private BaseEnemy EnemyFactory()
+        {
+            var enemyObj = Instantiate(shooterEnemyPrefab).GetComponent<BaseEnemy>();
+            var eventsEnemy = (IObservableEnemy)enemyObj;
+            eventsEnemy.SubscribeDestroyEnemy(OnDestroyEnemy);
+            
+            return enemyObj;
+        }
+
+        private void ReturnEnemyToPool(BaseEnemy enemy)
+        {
+            _shooterEnemyPool.DisablePoolObject(enemy);
+        }
+        
+        #region IObserverEnemy
+        public void OnDestroyEnemy(BaseEnemy bulletObj)
+        {
+            ReturnEnemyToPool(bulletObj);
+        }
+        #endregion IObserverEnemy
+
     }
 }
 
