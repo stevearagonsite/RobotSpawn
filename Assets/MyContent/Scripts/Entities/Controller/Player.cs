@@ -8,7 +8,11 @@ namespace Entities.Controller
     [RequireComponent(typeof(SphereCollider))]
     public class Player : MonoBehaviour
     {
-        
+        private void Start()
+        {
+
+        }
+
         #region MonoBehavior
         private void OnCollisionEnter(Collision c)
         {
@@ -26,7 +30,7 @@ namespace Entities.Controller
             {
                 if (Input.GetTouch(0).phase == TouchPhase.Began)
                 {
-                    CheckTouch(Input.GetTouch(0).position);
+                    CheckTouch();
                 }
             }
             #endif
@@ -34,27 +38,17 @@ namespace Entities.Controller
             #if UNITY_EDITOR_WIN
             if (Input.GetMouseButtonDown(0))
             {
-                CheckTouch(Input.mousePosition);
+                CheckTouch();
             }
             #endif
         }
  
-        private void CheckTouch(Vector3 pos)
+        private void CheckTouch()
         {
-            RaycastHit hit;
-            var ray = Camera.main.ScreenPointToRay(pos);
-            if (!Physics.Raycast(ray, out hit)) return;
-            
-            var objectHit = hit.transform;
-            if (objectHit.gameObject.layer == Layers.ENEMIES_NUM_LAYER)
-            {
-                var b = BulletsManager.Instance.GetBasicBullet();
-                var spawnPosition =  transform.position + transform.forward * 5;
-                var forward = Vector3.Cross(spawnPosition, objectHit.transform.position).normalized;
-
-                b.transform.position = spawnPosition;
-                b.transform.Rotate(forward);
-            }
+            var b = BulletsManager.Instance.GetBasicBullet();
+            var spawnPosition =  transform.position + transform.forward * 5;
+            b.transform.position = spawnPosition;
+            b.transform.rotation = transform.rotation;
         }
     }
 }

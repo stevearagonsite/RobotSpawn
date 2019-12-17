@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Entities.Enemies.Events;
 using SO;
 using UnityEngine;
 using Managers;
+using Vuforia;
 
 namespace Entities.Enemies
 {
@@ -16,6 +18,7 @@ namespace Entities.Enemies
         protected event Action<BaseEnemy> OnDestroyEnemy = delegate { };
         public float SpawnRate { get; private set; }
         public float CurrentTimeToSpawn { get; private set; }
+
         #endregion Parameters & attributes
 
         #region MonoBehavior
@@ -86,7 +89,7 @@ namespace Entities.Enemies
             var transformReference = TransformSpawners[random];
             enemyObj.transform.position = transformReference.position;
             enemyObj.transform.rotation = transformReference.rotation;
+            enemyObj.transform.SetParent(transform);
         }
     }
 }
-

@@ -318,7 +318,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7012770556807134522
 Transform:
   m_ObjectHideFlags: 0
@@ -461,7 +461,7 @@ GameObject:
   - component: {fileID: 1041271105255266726}
   - component: {fileID: 1276943444069782924}
   m_Layer: 10
-  m_Name: BulletVariant
+  m_Name: BasicBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

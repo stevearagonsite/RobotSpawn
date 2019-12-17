@@ -50,20 +50,20 @@ namespace Bullets
 
             if (UpdateManager.Instance) UpdateManager.Instance.ExecuteFixed += FixedExecute;
 
-            foreach (var trail in _trails)
-            {
-                trail.time = 1f;
-            }
+            // foreach (var trail in _trails)
+            // {
+            //     trail.time = 1f;
+            // }
         }
 
         private void Dispose()
         {
             if (UpdateManager.Instance) UpdateManager.Instance.ExecuteFixed -= FixedExecute;
 
-            foreach (var trail in _trails)
-            {
-                trail.time = 0;
-            }
+            // foreach (var trail in _trails)
+            // {
+            //     trail.time = 0;
+            // }
         }
     }
 }

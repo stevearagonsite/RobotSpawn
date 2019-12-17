@@ -92,14 +92,12 @@ namespace Entities.Enemies
             if (CurrentTimeToFire >= FireRate)
             {
                 CurrentTimeToFire -= FireRate;
-                Debug.Log("Hey spawn call");
                 SpawnBullet();
             }
         }
 
         public void StopFire()
         {
-            Debug.Log("Stop Fire");
         }
         #endregion IFire
 
@@ -119,7 +117,6 @@ namespace Entities.Enemies
         {
             foreach (var cannonSpawner in TransformCannonSpawners)
             {
-                Debug.Log("Hey spawn call");
                 var bulletObj = BulletsManager.Instance.GetBasicBullet();
                 bulletObj.Damage = Damage;
                 bulletObj.transform.position = cannonSpawner.position;

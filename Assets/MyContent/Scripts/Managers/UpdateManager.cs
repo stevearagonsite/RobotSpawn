@@ -45,7 +45,7 @@ namespace Managers
 
         private void FixedUpdate()
         {
-            if (!IsPause && !ExecuteFixed.Equals(null)) ExecuteFixed();
+            if (!IsPause && !ExecuteFixed.Equals(null))ExecuteFixed();
         }
 
         #endregion UPDATES

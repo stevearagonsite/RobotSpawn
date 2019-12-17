@@ -1,4 +1,5 @@
-﻿using Entities.Enemies;
+﻿using System;
+using Entities.Enemies;
 using Entities.Enemies.Events;
 using UnityEngine;
 
@@ -7,10 +8,8 @@ namespace Managers
     public class EnemiesManager : MonoBehaviour, IObserverEnemy 
     {
         public GameObject shooterEnemyPrefab;
-        
         private Pool<BaseEnemy> _shooterEnemyPool;
-        private Pool<BaseEnemy> _SpawnerEnemyPool;
-        
+        private SpawnerEnemy spawnerEnemy;
         private static EnemiesManager _instance;
         public static EnemiesManager Instance => _instance;
         
@@ -26,9 +25,14 @@ namespace Managers
                 _instance = this;
             }
             _shooterEnemyPool = new Pool<BaseEnemy>(8, EnemyFactory, BaseEnemy.InitializeEnemy, BaseEnemy.DisposeEnemy, true);
-            // _SpawnerEnemyPool = new Pool<BaseEnemy>(4, EnemyFactory, BaseEnemy.InitializeEnemy, BaseEnemy.DisposeEnemy, true);
         }
-        
+
+
+        private void Start()
+        {
+            spawnerEnemy = FindObjectOfType<SpawnerEnemy>();
+        }
+
         public BaseEnemy GetShooterEnemy()
         {
             return _shooterEnemyPool.GetObjectFromPool();
@@ -54,7 +58,6 @@ namespace Managers
             ReturnEnemyToPool(bulletObj);
         }
         #endregion IObserverEnemy
-
     }
 }
 

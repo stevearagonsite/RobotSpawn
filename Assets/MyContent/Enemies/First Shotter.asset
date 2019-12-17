@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: First Shotter
   m_EditorClassIdentifier: 
   name: First Shooter
-  speed: 5
+  speed: 0.5
   life: 150
   damage: 1
-  rangeForFire: 20
-  fireRate: 1.5
+  rangeForFire: 2
+  fireRate: 2
