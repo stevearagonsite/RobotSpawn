@@ -11,6 +11,7 @@ namespace Bullets
         public event Action Execute = delegate { };
         [SerializeField]
         protected float _speed;
+        public float Damage { get; set; }
 
         private TrailRenderer[] _trails;
         protected const float MAX_TIME_LIFE = 5f;

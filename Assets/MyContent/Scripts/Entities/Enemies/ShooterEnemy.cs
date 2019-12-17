@@ -1,6 +1,7 @@
 ﻿using System;
 using Entities.Controller;
 using Entities.Enemies.Events;
+using Managers;
 using SO;
 using UnityEngine;
 
@@ -17,8 +18,8 @@ namespace Entities.Enemies
         protected event Action<BaseEnemy> OnDestroyEnemy = delegate { };
         public bool IsFiring { get; private set;}
         public float RangeForFire { get; private set; }
-
-        public float FireRate { get { return _life;} private set{_life = value;}}
+        public float FireRate{ get; private set; }
+        public float CurrentTimeToFire { get; private set; } = 0;
         #endregion Parameters & attributes
 
         #region MonoBehavior
@@ -87,7 +88,13 @@ namespace Entities.Enemies
         #region IFire
         public void StartFire()
         {
-            Debug.Log("Is Firing");
+            CurrentTimeToFire += Time.deltaTime;
+            if (CurrentTimeToFire >= FireRate)
+            {
+                CurrentTimeToFire -= FireRate;
+                Debug.Log("Hey spawn call");
+                SpawnBullet();
+            }
         }
 
         public void StopFire()
@@ -107,5 +114,17 @@ namespace Entities.Enemies
             OnDestroyEnemy -= observer;
         }
         #endregion IObservableEnemy
+
+        private void SpawnBullet()
+        {
+            foreach (var cannonSpawner in TransformCannonSpawners)
+            {
+                Debug.Log("Hey spawn call");
+                var bulletObj = BulletsManager.Instance.GetBasicBullet();
+                bulletObj.Damage = Damage;
+                bulletObj.transform.position = cannonSpawner.position;
+                bulletObj.transform.rotation = cannonSpawner.rotation;
+            }
+        }
     }
 }
