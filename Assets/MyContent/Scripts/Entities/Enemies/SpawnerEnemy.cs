@@ -10,15 +10,16 @@ namespace Entities.Enemies
 {
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(Collider))]
-    public class SpawnerEnemy : BaseEnemy, IObservableEnemy
+    public class SpawnerEnemy : BaseEnemy, IObservableSpawnerEnemy, IObserverEnemy
     {
         #region Parameters & attributes
         public SpawnerEnemySO scriptableObject;
         public Transform[] TransformSpawners;
-        protected event Action<BaseEnemy> OnDestroyEnemy = delegate { };
+        protected event Action<BaseEnemy> OnDestroySpawnerEnemy = delegate { };
         public float SpawnRate { get; private set; }
         public float CurrentTimeToSpawn { get; private set; }
-
+        public int MaxFleet { get; set;}
+        public int FleetCount { get; set;}
         #endregion Parameters & attributes
 
         #region MonoBehavior
@@ -53,7 +54,10 @@ namespace Entities.Enemies
             if (CurrentTimeToSpawn >= SpawnRate)
             {
                 CurrentTimeToSpawn -= SpawnRate;
-                SpawnShooterEnemy();
+                if (FleetCount < MaxFleet)
+                {
+                    SpawnShooterEnemy();
+                }
             }
         }
 
@@ -71,22 +75,34 @@ namespace Entities.Enemies
         #endregion BaseEnemy
 
         #region IObservableEnemy
-        public void SubscribeDestroyEnemy(Action<BaseEnemy> observer)
+        public void SubscribeDestroySpawnerEnemy(Action<BaseEnemy> observer)
         {
-            OnDestroyEnemy += observer;
+            OnDestroySpawnerEnemy += observer;
         }
 
-        public void UnSubscribeDestroyEnemy(Action<BaseEnemy> observer)
+        public void UnSubscribeDestroySpawnerEnemy(Action<BaseEnemy> observer)
         {
-            OnDestroyEnemy -= observer;
+            OnDestroySpawnerEnemy -= observer;
         }
         #endregion IObservableEnemy
 
+
+        #region IObserverDestroyEnemy
+        public void OnDestroyEnemy(BaseEnemy bulletObj)
+        {
+            FleetCount--;
+        }
+        #endregion IObserverDestroyEnemy
+
         void SpawnShooterEnemy()
         {
+            FleetCount++;
             var enemyObj = EnemiesManager.Instance.GetShooterEnemy();
             var random = UnityEngine.Random.Range(0, TransformSpawners.Length - 1);
             var transformReference = TransformSpawners[random];
+            var eventsEnemy = (IObservableEnemy)enemyObj;
+            eventsEnemy.SubscribeDestroyEnemy(OnDestroyEnemy);
+            
             enemyObj.transform.position = transformReference.position;
             enemyObj.transform.rotation = transformReference.rotation;
             enemyObj.transform.SetParent(transform);

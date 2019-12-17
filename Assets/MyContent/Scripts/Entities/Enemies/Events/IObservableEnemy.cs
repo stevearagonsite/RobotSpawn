@@ -2,9 +2,9 @@
 
 namespace Entities.Enemies.Events
 {
-    public interface IObservableEnemy
+    public interface IObservableSpawnerEnemy
     {
-        void SubscribeDestroyEnemy(Action<BaseEnemy> observer);
-        void UnSubscribeDestroyEnemy(Action<BaseEnemy> observer);
+        void SubscribeDestroySpawnerEnemy(Action<BaseEnemy> observer);
+        void UnSubscribeDestroySpawnerEnemy(Action<BaseEnemy> observer);
     }
 }

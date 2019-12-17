@@ -16,7 +16,8 @@ namespace Bullets
         private TrailRenderer[] _trails;
         protected const float MAX_TIME_LIFE = 5f;
         protected float _currentTimeLife = 0;
-
+        public string OwnerName { get; set; }
+        
         #region MonoBehavior
         protected void Awake()
         {

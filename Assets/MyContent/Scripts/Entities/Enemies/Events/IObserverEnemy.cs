@@ -1,7 +1,7 @@
 ﻿namespace Entities.Enemies.Events
 {
-    public interface IObserverEnemy 
+    public interface IObserverSpawnerEnemy 
     {
-        void OnDestroyEnemy(BaseEnemy bulletObj);
+        void OnDestroySpawnerEnemy(BaseEnemy bulletObj);
     }
 }

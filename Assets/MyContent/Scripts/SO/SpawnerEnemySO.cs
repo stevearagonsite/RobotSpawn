@@ -9,5 +9,6 @@ namespace SO
         public string name;
         public float life;
         public float spawnRate;
+        public int maxFleet;
     }
 }

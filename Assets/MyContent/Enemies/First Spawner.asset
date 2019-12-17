@@ -15,3 +15,4 @@ MonoBehaviour:
   name: First Spawner
   life: 1000
   spawnRate: 15
+  maxFleet: 8
