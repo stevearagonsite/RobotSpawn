@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Managers;
 using UnityEngine;
-
 using Utils.Consts;
-using Managers;
-using Bullets;
 
 namespace Entities.Controller
 {
@@ -13,6 +8,7 @@ namespace Entities.Controller
     [RequireComponent(typeof(SphereCollider))]
     public class Player : MonoBehaviour
     {
+        
         #region MonoBehavior
         private void OnCollisionEnter(Collision c)
         {
@@ -22,14 +18,42 @@ namespace Entities.Controller
             }
         }
         #endregion MonoBehavior
-
-        private void Update()
+        
+        void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F))
+            #if UNITY_ANDROID || UNITY_IOS
+            if (Input.touchCount > 0 && Input.touchCount < 2)
+            {
+                if (Input.GetTouch(0).phase == TouchPhase.Began)
+                {
+                    CheckTouch(Input.GetTouch(0).position);
+                }
+            }
+            #endif
+            
+            #if UNITY_EDITOR_WIN
+            if (Input.GetMouseButtonDown(0))
+            {
+                CheckTouch(Input.mousePosition);
+            }
+            #endif
+        }
+ 
+        private void CheckTouch(Vector3 pos)
+        {
+            RaycastHit hit;
+            var ray = Camera.main.ScreenPointToRay(pos);
+            if (!Physics.Raycast(ray, out hit)) return;
+            
+            var objectHit = hit.transform;
+            if (objectHit.gameObject.layer == Layers.ENEMIES_NUM_LAYER)
             {
                 var b = BulletsManager.Instance.GetBasicBullet();
-                b.transform.position = transform.position + transform.forward * 5;
-                b.transform.rotation = transform.rotation;
+                var spawnPosition =  transform.position + transform.forward * 5;
+                var forward = Vector3.Cross(spawnPosition, objectHit.transform.position).normalized;
+
+                b.transform.position = spawnPosition;
+                b.transform.Rotate(forward);
             }
         }
     }

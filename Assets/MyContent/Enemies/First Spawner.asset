@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: First Spawner
   life: 1000
-  spawnRate: 5
+  spawnRate: 15
